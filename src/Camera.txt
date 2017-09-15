@@ -1,0 +1,50 @@
+   10REM>Camera - an Arthur desktop screenshot accessory
+   20REM saves sprites in :0.$. - files numbered 0-9A-Z
+   30REM default file prefix is Screen
+   40REM 20161226 version 1.0 r.stricklin <bear@typewritten.org>
+  100DEFFNinstall_file_Camera
+  110camfilepfx$="Screen"
+  120camfilenr=48
+  130cameralib_os_ver$=FNcameralib_get_os_ver
+  140OSCLI"SMerge Icons.Camera"
+  150PROCsys_addtoiconbar("camera","camera",&301A,icon_fgcol,icon_bgcol,96)
+  160=0
+  200DEFFNmenu_camera
+  210IF INSTR(cameralib_os_ver$," 0.30 ")>0 THEN
+  220PROCfilehandler_renamebox("camera","Save screenshot","","","prefix")
+  230ELSE
+  240PROCfilehandler_renamebox("camera","Save screenshot","","","prefix",camfilepfx$)
+  250ENDIF
+  260=0
+  300DEFFNdialogueselect_camera
+  310PROCsys_closedialogue
+  320CASEicon% OF
+  330WHEN0 : PROCcameralib_set_filepfx : camfilenr=48
+  340ENDCASE
+  350=0
+  400DEFFNmenuselect_camera
+  410CASEitem0% OF
+  420ENDCASE
+  430=0
+  500DEFFNaction_camera
+  510OSCLI"ScreenSave "+camfilepfx$+CHR$camfilenr
+  520CASEcamfilenr OF
+  530WHEN57 : camfilenr=65
+  540WHEN90 : camfilenr=48
+  550OTHERWISE camfilenr+=1
+  560ENDCASE
+  570PROCfilehandler_updatealldirwindows
+  580=0
+  600DEFFNcameralib_get_os_ver
+  610LOCAL release
+  620LOCAL ERROR
+  630ON ERROR LOCAL IF ERR=247 RESTORE ERROR :=REPORT$
+  640OSCLI"fx0"
+  650=REPORT$
+  700DEFPROCcameralib_set_filepfx
+  710IF INSTR(cameralib_os_ver$," 0.30 ")>0 THEN
+  720camfilepfx$=$data
+  730ELSE
+  740camfilepfx$=$data%
+  750ENDIF
+  760ENDPROC
